@@ -15,7 +15,7 @@ import { TodoList } from "./src/components/TodoList";
 const { width } = Dimensions.get("window");
 
 export default function App() {
-  const [todo, setText] = useState("");
+  const [todo, setTodo] = useState("");
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -25,12 +25,12 @@ export default function App() {
           style={styles.input}
           placeholder="add item"
           value={todo}
-          onChangeText={(newText) => setText(newText)}
+          onChangeText={(newText) => setTodo(newText)}
           returnKeyType={"done"}
           autoCorrect={false}
         />
         <ScrollView>
-          <TodoList />
+          <TodoList textValue={`TodoItem`} />
         </ScrollView>
       </View>
     </View>
