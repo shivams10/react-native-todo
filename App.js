@@ -1,38 +1,38 @@
-import { useState } from "react";
-import {
-  Dimensions,
-  Platform,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-
-import { TodoList } from "./src/components/TodoList";
-
-const { width } = Dimensions.get("window");
+import React, { useState } from "react";
+import { Keyboard, ScrollView, StyleSheet, Text, View } from "react-native";
+import TaskItem from "./src/components/TaskItem";
+import TaskInputField from "./src/components/TaskInputField";
 
 export default function App() {
-  const [todo, setText] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  const addTask = (task) => {
+    if (task == null) return;
+    setTasks([...tasks, task]);
+    Keyboard.dismiss();
+  };
+
+  const deleteTask = (deleteIndex) => {
+    setTasks(tasks.filter((value, index) => index != deleteIndex));
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <Text style={styles.appTitle}>Work List</Text>
-      <View style={styles.card}>
-        <TextInput
-          style={styles.input}
-          placeholder="add item"
-          value={todo}
-          onChangeText={(newText) => setText(newText)}
-          returnKeyType={"done"}
-          autoCorrect={false}
-        />
-        <ScrollView>
-          <TodoList />
-        </ScrollView>
-      </View>
+      <Text style={styles.heading}>TODO LIST</Text>
+      <ScrollView style={styles.scrollView}>
+        {tasks.map((task, index) => {
+          return (
+            <View key={index} style={styles.taskContainer}>
+              <TaskItem
+                index={index + 1}
+                task={task}
+                deleteTask={() => deleteTask(index)}
+              />
+            </View>
+          );
+        })}
+      </ScrollView>
+      <TaskInputField addTask={addTask} />
     </View>
   );
 }
@@ -40,41 +40,20 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    backgroundColor: "#11998e",
+    backgroundColor: "#1E1A3C",
   },
-  appTitle: {
+  heading: {
     color: "#fff",
-    fontSize: 36,
-    marginTop: 60,
-    marginBottom: 30,
-    fontWeight: "300",
+    fontSize: 20,
+    fontWeight: "600",
+    marginTop: 30,
+    marginBottom: 10,
+    marginLeft: 20,
   },
-  card: {
-    backgroundColor: "#fff",
-    flex: 1,
-    width: width - 25,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: "rgb(50,50,50)",
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowOffset: {
-          height: -1,
-          width: 0,
-        },
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
+  scrollView: {
+    marginBottom: 70,
   },
-  input: {
-    padding: 20,
-    borderBottomColor: "#11998e",
-    borderBottomWidth: 1,
-    fontSize: 24,
+  taskContainer: {
+    marginTop: 20,
   },
 });
